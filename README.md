@@ -1,58 +1,86 @@
-# gemini-
-gemini模型用于comfyui提示词润色以及英文输出用来解决ltx英文提示词9"Using the Gemini model to refine prompts for ComfyUI and generate English output, specifically to handle the translation and optimization of LTX prompts from Chinese to English."0
-# ComfyUI-ZhouhanNode: Cinematic Prompt Director 🎬
+🎬 ComfyUI Zhou Nodes (大模型提示词润色与导演级人格注入)
+专为高阶 AI 绘画与视频生成创作者设计的本地化提示词工程节点。
 
-A powerful, fully localized custom node for ComfyUI that transforms simple Chinese concepts into highly detailed, cinematic English prompts. It is powered by local **Gemma 4** models and specifically optimized to generate the complex "director-level" camera and lighting terminologies required by advanced video generation models like **LTX-Video**.
+本项目通过引入大语言模型（如 Gemma），完美解决 LTX-Video 等重型模型对高质量英文提示词的严苛需求。支持中文直输、语境智能翻译与动态细节扩写，让你的工作流彻底摆脱语言和想象力的束缚。
 
-## ✨ Why this Node? (The LTX-Video Problem)
-Video generation models like LTX-Video have strict prompt requirements. They do not understand simple phrasing well and demand explicit cinematic descriptions (e.g., tracking shots, motion blur, anamorphic lens, specific lighting). 
+✨ 核心特性 (Features)
+LTX-Video 专属优化: 深度适配 LTX-Video 等前沿视频/图像模型的提示词语法，精准将基础中文脑洞转化为专业、富有画面感与光影细节的纯英文 Prompt。
 
-**Zhouhan Director Prompt** solves this by:
-1. **Zero-Barrier Translation:** Type your ideas in simple Chinese.
-2. **Cinematic Expansion:** Automatically injects professional cinematography terms.
-3. **Strict VRAM Management:** It only loads the LLM into VRAM during prompt generation and **instantly unloads it** afterward. This ensures your GPU memory is 100% free for the heavy lifting of LTX-Video or FLUX generation.
+极致显存防爆 (Anti-OOM): 内置严苛的显存释放机制。确保大语言模型在生成完提示词后立刻退场清空显存，绝不抢占后续 FLUX 等生图/生视频大模型的宝贵显卡资源。
 
-## 🚀 Features
-* **Fully Local & Offline:** No API keys required. Uses Google's open-weights Gemma 4 models.
-* **Dynamic Model Switching:** Supports 4 different sizes of Gemma models (e2b, e4b, 26b, 31b) directly from a dropdown menu.
-* **Auto VRAM Clearing:** Employs aggressive garbage collection and `torch.cuda.empty_cache()` to prevent OutOfMemory errors.
-* **Parameter Control:** Built-in temperature and seed controls to tweak the AI's creativity.
+物理人格外挂 (Skill Adapter): 独创的 .md 文件外挂系统。只需放入指定的人设配置（如“电影级摄影师”、“深情祖师爷”），模型即可瞬间切换文风，支持一键热插拔与强度动态调整。
 
-## 🛠️ Installation
+纯净本地推理: 无需复杂配置，自动扫描并加载 ComfyUI/models/zh/ 目录下的本地大语言模型。彻底断网可用，隐私数据绝对安全。
 
-1. Navigate to your ComfyUI `custom_nodes` directory:
-   ```bash
-   cd ComfyUI/custom_nodes
-Clone this repository:
+🧩 节点说明 (Nodes)
+🎛️ Zhou Skill Adapter: 技能适配器。扫描本地 models/zh 目录，将复杂的角色背景设定通过 XML 标签安全注入，严格规范 LLM 的输出框架，防止模型产生幻觉。
+
+🎬 Zhou Director Prompt: 导演提示词引擎。接收中文灵感与 Skill 设定，调动本地 LLM 算力进行高维度扩写与高质量英文翻译输出。
+
+📦 安装与依赖 (Installation)
+进入 ComfyUI 自定义节点目录：
 
 Bash
-git clone [https://github.com/cvdd170/gemini-.git](https://github.com/cvdd170/gemini-.git)
-(Note: You can rename the cloned folder to ComfyUI-ZhouhanNode for better organization).
-
-Install required Python packages (if missing):
+cd ComfyUI/custom_nodes/
+克隆本仓库：
 
 Bash
-pip install transformers torch accelerate
-📦 Model Setup (Crucial Step)
-This node does not download models automatically. You must download the Gemma 4 Instruct weights (safetensors format) and place them in specific folders.
+git clone https://github.com/cvdd170/gemini-.git
+确保安装了最新的运行依赖（管理器通常会自动安装）：
 
-Go to your ComfyUI root directory and create the following path: ComfyUI/models/zh/
+Plaintext
+transformers>=4.40.0
+accelerate>=0.29.0
+重启 ComfyUI。
 
-Download your preferred Gemma 4 Instruct model(s) from HuggingFace or ModelScope.
+💡 使用指南与排障 (Usage & Troubleshooting)
+模型部署: 将准备好的本地大语言模型文件夹直接拖入 ComfyUI/models/zh/ 目录下即可。
 
-Create a subfolder for the model and place all core files (config.json, model.safetensors, tokenizer.json, etc.) inside.
+Skill 配置: 在同目录下建立专属的 Skill 文件夹并放入 SKILL.md 配置文件。
 
-Recommended Setup for Video Generation:
+极客排障原则: 遇到任何报错，请优先排查环境路径是否正确，其次检查是否存在显存溢出 (OutOfMemory) 问题。
 
-For Ultimate Speed: Download gemma-4-e2b-it and place it in ComfyUI/models/zh/gemma-4-e2b-it
+🚀 小白必看：Zhou Nodes 保姆级连线与使用教程
+欢迎使用 Zhou Nodes (导演级人格注入系统)！别看这套系统的底层逻辑很硬核，但用起来超级简单。只需要简单的“搜索 -> 放置 -> 连线”三步，你就能让大模型化身专业导演，为你写出大片级的英文提示词。
 
-For Epic Cinematic Detail (Recommended): Download gemma-4-e4b-it and place it in ComfyUI/models/zh/gemma-4-e4b-it
+跟着下面的步骤，我们在画布上把它们连起来吧！
 
-🎮 Usage
-Restart ComfyUI.
+🔍 第一步：在画布上召唤节点
+在 ComfyUI 的空白网格画布上，双击鼠标左键（或者右键点击空白处选择“搜索”）。
 
-Right-click on the canvas -> Add Node -> Zhouhan Nodes -> 🎬 Zhouhan Director Prompt.
+在弹出的搜索框里，直接输入拼音：zh
 
-Connect the english_prompt string output to the positive prompt input of your text encoder (e.g., the LTX-Video prompt node).
+这时你会看到下拉列表里出现了我们专属的两个节点，依次点击把它们都放到画布上：
 
-Type your idea in Chinese, select your downloaded Gemma model, hit "Queue Prompt", and watch the magic happen!
+🎭 Zhou Skill Adapter (这是用来选择角色的适配器)
+
+🎬 Zhou Director Prompt (这是真正干活生成提示词的导演)
+
+🧩 第二步：黄金连线法则（核心步骤）
+现在你的画布上有两个新节点了。记住一个核心逻辑：角色设定在左，干活的导演在右。
+
+我们需要把角色信息传递给导演，请进行以下两步连线：
+
+连接提示词： 鼠标按住左边 Zhou Skill Adapter 节点输出端的 formatted_system_prompt（格式化系统提示词）圆点，拉一根线，连到右边 Zhou Director Prompt 节点输入端的 skill_system_prompt 圆点上。
+
+连接角色强度： 鼠标按住左边节点的 strength（强度）圆点，拉一根线，连到右边节点的 skill_strength 圆点上。
+
+(恭喜！现在你的导演已经成功“灵魂附体”了！)
+
+✍️ 第三步：输入你的灵感并输出结果
+现在我们来设置导演的任务，并把生成的完美英文提示词拿出来：
+
+输入中文灵感： 在右边的 Zhou Director Prompt 节点里，找到 text 输入框。在这里用大白话写下你的想法，比如：“一个赛博朋克武士在下雨的霓虹街道上吃面”。
+
+选择模型： 在 local_gemma_model 下拉菜单里，选择你下载好的 Gemma 大模型（注意：确保模型已经放在了 models/zh 文件夹里哦）。
+
+把结果拿出来（连线到文本或画图节点）： * 按住 Zhou Director Prompt 右侧输出端的 english_prompt 圆点拉出一条线，在空白处松开。
+
+在弹出的菜单里搜索并选择 Show Text（显示文本）节点。这样生成完后，你就能直接看到绝美的英文长难句了！
+
+进阶玩法： 你也可以直接把这个 english_prompt 连到你原来画图工作流里的 CLIP Text Encode (正向提示词编码器) 的文本输入端，实现一键全自动画图！
+
+🟢 第四步：点击生成，见证奇迹
+全部连好之后，点击 ComfyUI 菜单栏的 “添加提示词队列 (Queue Prompt)”。
+
+稍微等待几秒钟，你就会看到原本简单的中文短句，被瞬间扩写成了充满电影光影细节、镜头语言丰富的纯英文大师级提示词！而且系统会在后台自动帮你释放显存，绝对不会卡后面的画图步骤，放心大胆地用吧！
